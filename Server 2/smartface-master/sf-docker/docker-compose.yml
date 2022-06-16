@@ -1,48 +1,50 @@
 version: "3.4"
 services:
-  sf-base:
-    image: ${REGISTRY}sf-base:${SF_VERSION}
-    container_name: SFBase
-    command: --serviceName SFBase
-    ports:
-      - 2406:2406
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - ConnectionStrings__CoreDbContext
-      - Database__DbEngine
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      - S3Bucket__Endpoint
-      - NoSqlDataStorageDisabled
-      - Metrics__PROMETHEUS_METRIC_SERVER_HOSTNAME
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
+  # INNO: for one SmartFace instance only one base service is allowed
+  # sf-base:
+  #   image: ${REGISTRY}sf-base:${SF_VERSION}
+  #   container_name: SFBase
+  #   command: --serviceName SFBase
+  #   ports:
+  #     - 2406:2406
+  #   restart: unless-stopped
+  #   environment:
+  #     - RabbitMQ__Hostname
+  #     - RabbitMQ__Username
+  #     - RabbitMQ__Password
+  #     - RabbitMQ__Port
+  #     - ConnectionStrings__CoreDbContext
+  #     - Database__DbEngine
+  #     - AppSettings__Log-RollingFile-Enabled=false
+  #     - AppSettings__USE_JAEGER_APP_SETTINGS
+  #     - JAEGER_AGENT_HOST
+  #     - S3Bucket__Endpoint
+  #     - NoSqlDataStorageDisabled
+  #     - Metrics__PROMETHEUS_METRIC_SERVER_HOSTNAME
+  #   volumes:
+  #     - "./iengine.lic:/etc/innovatrics/iengine.lic"
 
-  sf-group:
-    image: ${REGISTRY}sf-base:${SF_VERSION}
-    container_name: SFGroup
-    command: --serviceName SFGroup
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - ConnectionStrings__CoreDbContext
-      - Database__DbEngine
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      - S3Bucket__Endpoint
-      - NoSqlDataStorageDisabled
-      - Metrics__PROMETHEUS_METRIC_SERVER_HOSTNAME
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
+  # INNO: for one SmartFace instance only one grouping service is allowed
+  # sf-group:
+  #   image: ${REGISTRY}sf-base:${SF_VERSION}
+  #   container_name: SFGroup
+  #   command: --serviceName SFGroup
+  #   restart: unless-stopped
+  #   environment:
+  #     - RabbitMQ__Hostname
+  #     - RabbitMQ__Username
+  #     - RabbitMQ__Password
+  #     - RabbitMQ__Port
+  #     - ConnectionStrings__CoreDbContext
+  #     - Database__DbEngine
+  #     - AppSettings__Log-RollingFile-Enabled=false
+  #     - AppSettings__USE_JAEGER_APP_SETTINGS
+  #     - JAEGER_AGENT_HOST
+  #     - S3Bucket__Endpoint
+  #     - NoSqlDataStorageDisabled
+  #     - Metrics__PROMETHEUS_METRIC_SERVER_HOSTNAME
+  #   volumes:
+  #     - "./iengine.lic:/etc/innovatrics/iengine.lic"
 
   sf-cam-26:
     image: ${REGISTRY}sf-cam:${SF_VERSION}
@@ -694,168 +696,50 @@ services:
     # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
     runtime: nvidia
 
-  sf-cam-nx:
-    image: ${REGISTRY}sf-cam:${SF_VERSION}
-    # Guid needs to match ServiceInstallNames.NX_TEST_CAMERA_GUID
-    container_name: 53b4d78e-323f-4a0f-aa6d-99c464448b6d
-    command: --serviceName 53b4d78e-323f-4a0f-aa6d-99c464448b6d
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - ConnectionStrings__CoreDbContext
-      - Database__DbEngine
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      - S3Bucket__Endpoint
-      - Metrics__PROMETHEUS_METRIC_SERVER_HOSTNAME
-    # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    runtime: nvidia
+  # INNO: uncomment only if having remote detection 
+  # detector-cpu:
+  #   image: ${REGISTRY}sf-detector:${SF_VERSION}
+  #   restart: unless-stopped
+  #   scale: 3
+  #   environment:
+  #     - RabbitMQ__Hostname
+  #     - RabbitMQ__Username
+  #     - RabbitMQ__Password
+  #     - RabbitMQ__Port
+  #     - AppSettings__Log-RollingFile-Enabled=false
+  #     - AppSettings__USE_JAEGER_APP_SETTINGS
+  #     - JAEGER_AGENT_HOST
+  #     # - Gpu__GpuEnabled=true
+  #     # - Gpu__GpuNeuralRuntime=Tensor
+  #   volumes:
+  #     - "./iengine.lic:/etc/innovatrics/iengine.lic"
+  #   # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
+  #   #runtime: nvidia
 
-  detector-cpu-1:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectCpu1
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      # - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    #runtime: nvidia
-
-  detector-gpu-1:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectGpu1
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    runtime: nvidia
+  # INNO: uncomment only if having remote detection 
+  # detector-gpu:
+  #   image: ${REGISTRY}sf-detector:${SF_VERSION}
+  #   restart: unless-stopped
+  #   scale: 3
+  #   environment:
+  #     - RabbitMQ__Hostname
+  #     - RabbitMQ__Username
+  #     - RabbitMQ__Password
+  #     - RabbitMQ__Port
+  #     - AppSettings__Log-RollingFile-Enabled=false
+  #     - AppSettings__USE_JAEGER_APP_SETTINGS
+  #     - JAEGER_AGENT_HOST
+  #     - Gpu__GpuEnabled=true
+  #     # - Gpu__GpuNeuralRuntime=Tensor
+  #   volumes:
+  #     - "./iengine.lic:/etc/innovatrics/iengine.lic"
+  #   # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
+  #   runtime: nvidia
   
-  detector-cpu-2:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectCpu2
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      # - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    #runtime: nvidia
-
-  
-  detector-gpu-2:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectGpu2
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    runtime: nvidia
-  
-  detector-cpu-3:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectCpu3
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      # - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    #runtime: nvidia
-  
-  detector-gpu-3:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectGpu3
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    runtime: nvidia
-  
-  detector-cpu-4:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectCpu4
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      # - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    #runtime: nvidia
-
-  extractor-cpu-1:
+  extractor-cpu:
     image: ${REGISTRY}sf-extractor:${SF_VERSION}
-    container_name: SFExtractCpu1
     restart: unless-stopped
+    scale: 5
     environment:
       - RabbitMQ__Hostname
       - RabbitMQ__Username
@@ -871,10 +755,10 @@ services:
     # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
     #runtime: nvidia
 
-  extractor-gpu-1:
+  extractor-gpu:
     image: ${REGISTRY}sf-extractor:${SF_VERSION}
-    container_name: SFExtractGpu1
     restart: unless-stopped
+    scale: 5
     environment:
       - RabbitMQ__Hostname
       - RabbitMQ__Username
@@ -889,25 +773,6 @@ services:
       - "./iengine.lic:/etc/innovatrics/iengine.lic"
     # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
     runtime: nvidia
-
-  extractor-cpu-2:
-    image: ${REGISTRY}sf-extractor:${SF_VERSION}
-    container_name: SFExtractCpu2
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      # - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    #runtime: nvidia
 
 networks:
   default:
