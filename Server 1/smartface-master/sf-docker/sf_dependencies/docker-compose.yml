@@ -1,17 +1,18 @@
 version: '3'
 services:
-  mssql:
-    image: "mcr.microsoft.com/mssql/server:2019-latest"
-    container_name: mssql
-    ports:
-      - "1433:1433"
-    environment: 
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=Test1234
-    restart: unless-stopped
-    volumes:
-      - mssqldata:/var/opt/mssql
-      #- /var/lib/smartface/mssql:/var/opt/mssql
+  # INNO: choose database platform
+  # mssql:
+  #   image: "mcr.microsoft.com/mssql/server:2019-latest"
+  #   container_name: mssql
+  #   ports:
+  #     - "1433:1433"
+  #   environment: 
+  #     - ACCEPT_EULA=Y
+  #     - SA_PASSWORD=Test1234
+  #   restart: unless-stopped
+  #   volumes:
+  #     - mssqldata:/var/opt/mssql
+  #     #- /var/lib/smartface/mssql:/var/opt/mssql
 
   pgsql:
     image: "postgres:13.2"
@@ -19,20 +20,21 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=Test1234
+      - POSTGRES_PASSWORD=Test1234 #INNO: strong password recommended
     restart: unless-stopped
     volumes:
       - pgsqldata:/var/lib/postgresql/data
       #- /var/lib/smartface/pgsql:/var/lib/postgresql/data
 
-  pgadmin:
-    image: "dpage/pgadmin4:5.1"
-    container_name: pgadmin
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: Test1234
-    ports:
-      - "7070:80"
+  # INNO: for production use not required
+  # pgadmin:
+  #   image: "dpage/pgadmin4:5.1"
+  #   container_name: pgadmin
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+  #     PGADMIN_DEFAULT_PASSWORD: Test1234
+  #   ports:
+  #     - "7070:80"
   
   rabbitmq:
     image: "rabbitmq:3.9-management"
@@ -76,7 +78,8 @@ services:
      - "6832:6832/udp"
 
 volumes:
-  mssqldata:
+  # INNO: not required as well
+  # mssqldata:
   pgsqldata:
   miniodata:
   rmqdata:

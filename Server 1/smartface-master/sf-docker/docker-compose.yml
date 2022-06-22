@@ -694,29 +694,30 @@ services:
     # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
     runtime: nvidia
 
-  sf-cam-nx:
-    image: ${REGISTRY}sf-cam:${SF_VERSION}
-    # Guid needs to match ServiceInstallNames.NX_TEST_CAMERA_GUID
-    container_name: 53b4d78e-323f-4a0f-aa6d-99c464448b6d
-    command: --serviceName 53b4d78e-323f-4a0f-aa6d-99c464448b6d
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - ConnectionStrings__CoreDbContext
-      - Database__DbEngine
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      - S3Bucket__Endpoint
-      - Metrics__PROMETHEUS_METRIC_SERVER_HOSTNAME
-    # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    runtime: nvidia
+  # INNO: not required if you do not integrate with VMS
+  # sf-cam-nx:
+  #   image: ${REGISTRY}sf-cam:${SF_VERSION}
+  #   # Guid needs to match ServiceInstallNames.NX_TEST_CAMERA_GUID
+  #   container_name: 53b4d78e-323f-4a0f-aa6d-99c464448b6d
+  #   command: --serviceName 53b4d78e-323f-4a0f-aa6d-99c464448b6d
+  #   restart: unless-stopped
+  #   environment:
+  #     - RabbitMQ__Hostname
+  #     - RabbitMQ__Username
+  #     - RabbitMQ__Password
+  #     - RabbitMQ__Port
+  #     - ConnectionStrings__CoreDbContext
+  #     - Database__DbEngine
+  #     - AppSettings__Log-RollingFile-Enabled=false
+  #     - AppSettings__USE_JAEGER_APP_SETTINGS
+  #     - JAEGER_AGENT_HOST
+  #     - S3Bucket__Endpoint
+  #     - Metrics__PROMETHEUS_METRIC_SERVER_HOSTNAME
+  #   # - Gpu__GpuNeuralRuntime=Tensor
+  #   volumes:
+  #     - "./iengine.lic:/etc/innovatrics/iengine.lic"
+  #   # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
+  #   runtime: nvidia
 
   api:
     image: ${REGISTRY}sf-api:${SF_VERSION}
@@ -785,10 +786,14 @@ services:
     volumes:
       - "./iengine.lic:/etc/innovatrics/iengine.lic"
 
-  detector-cpu-1:
+  # INNO: all services except camera can be scaled with scale parameter
+  detector-cpu:
     image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectCpu1
+    # if you want spawn more detectors, container_name must be removed. It is not required.
+    # container_name: SFDetectCpu
     restart: unless-stopped
+    # INNO: uncomment if you want to scale more detectors
+    # scale: 3
     environment:
       - RabbitMQ__Hostname
       - RabbitMQ__Username
@@ -804,10 +809,11 @@ services:
     # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
     #runtime: nvidia
 
-  detector-gpu-1:
+  detector-gpu:
     image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectGpu1
     restart: unless-stopped
+    # INNO: uncomment if you want to scale more detectors
+    # scale: 3
     environment:
       - RabbitMQ__Hostname
       - RabbitMQ__Username
@@ -823,86 +829,10 @@ services:
     # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
     runtime: nvidia
 
-  detector-cpu-2:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectCpu2
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      # - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    #runtime: nvidia
-
-  detector-gpu-2:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectGpu2
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    runtime: nvidia
-
-  detector-cpu-3:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectCpu3
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      # - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    #runtime: nvidia
-
-  detector-gpu-3:
-    image: ${REGISTRY}sf-detector:${SF_VERSION}
-    container_name: SFDetectGpu3
-    restart: unless-stopped
-    environment:
-      - RabbitMQ__Hostname
-      - RabbitMQ__Username
-      - RabbitMQ__Password
-      - RabbitMQ__Port
-      - AppSettings__Log-RollingFile-Enabled=false
-      - AppSettings__USE_JAEGER_APP_SETTINGS
-      - JAEGER_AGENT_HOST
-      - Gpu__GpuEnabled=true
-      # - Gpu__GpuNeuralRuntime=Tensor
-    volumes:
-      - "./iengine.lic:/etc/innovatrics/iengine.lic"
-    # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
-    runtime: nvidia
-
-  extractor-cpu-1:
+  extractor-cpu:
     image: ${REGISTRY}sf-extractor:${SF_VERSION}
-    container_name: SFExtractCpu1
     restart: unless-stopped
+    scale: 5
     environment:
       - RabbitMQ__Hostname
       - RabbitMQ__Username
@@ -918,10 +848,10 @@ services:
     # - "/var/tmp/innovatrics/tensor-rt:/var/tmp/innovatrics/tensor-rt"
     #runtime: nvidia
 
-  extractor-gpu-1:
+  extractor-gpu:
     image: ${REGISTRY}sf-extractor:${SF_VERSION}
-    container_name: SFExtractGpu1
     restart: unless-stopped
+    scale: 5
     environment:
       - RabbitMQ__Hostname
       - RabbitMQ__Username
